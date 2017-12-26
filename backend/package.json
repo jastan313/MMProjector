@@ -1,19 +1,19 @@
 {
-  "name": "MMProjector",
+  "name": "MMProjector-Backend",
   "version": "1.0.0",
   "description": "My Movie Projector: A FunkSVD-approach movie recommender based on your own personal film ratings and optional filters relative to IMDb, Rotten Tomatoes, Metacritic, and other rating scales.",
   "main": "index.js",
   "scripts": {
-    
+    "start": "nodemon app.js"
   },
   "author": "Jason Tan (jastan313)",
   "license": "ISC", 
   "dependencies": {
-    "express": "latest", 
-    "mongoose":"latest",
-    "cors":"latest",
-    "body-parser":"latest",
-    "mongoose-unique-validator":"latest",
-    "bcrypt":"latest"
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
+    "express": "^4.15.3",
+    "mongoose": "^4.11.3",
+    "mongoose-unique-validator": "^1.0.6",
+    "bcrypt": "^3.10.10"
 }
 }
