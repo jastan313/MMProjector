@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 
 // Server Configuration
-var basePath = '/mmprojector';
+var basePath = '/';
 var port = 8080;
 
 // Connection to MongoDB
@@ -20,6 +20,7 @@ mongoose.connect(dbUrl, {useMongoClient: true}, function (error) {
 });
 
 // Routes and Backend Funcioncalities
+var indexRoutes = require('./src/routes/index-routes');
 var userRoutes = require('./src/routes/user-routes');
 
 // App Instance
@@ -28,7 +29,10 @@ app.use(express.static('public'));
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+app.use(basePath, indexRoutes);
 app.use(basePath, userRoutes);
+
 
 // Execute App
 app.listen(port, () => {
