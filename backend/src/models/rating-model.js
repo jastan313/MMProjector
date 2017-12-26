@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 // Rating Schema
 var RatingSchema = new Schema({
     user: {type: Schema.Types.ObjectId, ref: 'User'},
-    userrating: {type: Number, required: true, default: 5},
+    userrating: {type: Number, required: true, default: 5, min: 0, max: 10},
     title: {type: String, required: true},
     released: {type: Number, required: true},
     runtime: {type: String, required: true},

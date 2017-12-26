@@ -6,48 +6,62 @@ var User = require('../models/user-model');
 
 // Get Specific User
 router.route('/api/user/:id').get(function (req, res) {
-  User.findById(req.params.id, function (err, user){
-      res.json(user);
-  });
-});
-
-// Put User
-router.route('/api/user').post(function (req, res) {
-  var item = new User(req.body);
-      item.save()
-    .then(item => {
-    res.json('Added');
-    })
-    .catch(err => {
-    res.status(400).send("unable to save to database");
+    User.findById(req.params.id, function (err, user) {
+        res.json(user);
     });
 });
 
-//  Update Specific
-router.route('/update/:id').post(function (req, res) {
-  User.findById(req.params.id, function(err, item) {
-    if (!item)
-      return next(new Error('Could not load Document'));
-    else {
-      item.desc = req.body.desc;
+// Create User
+router.route('/api/user').post(function (req, res) {
+    var user = new User(req.body);
+    user.save().then(user => {
+        user.populate('ratings').execPopulate().then(user => {
+            res.json({
+                _id: user._id,
+                email: user.email,
+                ratings: user.ratings
+            });
+        }).catch(err => {
+            res.status(400).send(err);
+        });
+    }).catch(err => {
+        res.status(400).send(err);
+    });
+});
 
-      item.save().then(item => {
-          res.json('Updated');
-      })
-      .catch(err => {
-            res.status(400).send("unable to update the database");
-      });
-    }
-  });
+// Update Specific User
+router.route('/api/user/:id').post(function (req, res) {
+    User.findById(req.params.id, function (err, user) {
+        if (!user)
+            return next(new Error('User could not be found.'));
+        else {
+            user.ratings = req.body.ratings;
+            user.save().then(user => {
+                user.populate('ratings').execPopulate().then(user => {
+                    res.json({
+                        _id: user._id,
+                        email: user.email,
+                        ratings: user.ratings
+                    });
+                }).catch(err => {
+                    res.status(400).send(err);
+                });
+            }).catch(err => {
+                res.status(400).send(err);
+            });
+        }
+    });
 });
 
 // Delete Specific
 router.route('/delete/:id').get(function (req, res) {
-  TodoList.findByIdAndRemove({_id: req.params.id},
-       function(err, item){
-        if(err) res.json(err);
-        else res.json('Deleted');
-    });
+    User.findByIdAndRemove({_id: req.params.id},
+            function (err, user) {
+                if (err)
+                    res.json(err);
+                else
+                    res.json('User {' + user.email + '} deleted');
+            });
 });
 
 module.exports = router;

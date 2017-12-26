@@ -4,6 +4,8 @@ var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
 var SALT_WORK_FACTOR = 10;
 
+var Rating = require('../models/user-model');
+
 // User Schema
 var UserSchema = new Schema({
     email: {type: String, required: true, unique: true},
@@ -35,6 +37,13 @@ UserSchema.pre('save', function(next) {
     });
 });
 
+// Middleware to cascade delete (clean up) dependencies
+UserSchema.pre('remove', function(next) {
+    // 'this' is the User being removed.
+    Rating.remove({user: this._id}).exec();
+    next();
+});
+
 // Function to compare client-side password with hashed password
 UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
@@ -44,6 +53,6 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 };
 
 // Apply the uniqueValidator plugin to userSchema.
-userSchema.plugin(uniqueValidator);
+UserSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('User', UserSchema);
