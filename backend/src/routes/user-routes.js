@@ -29,7 +29,7 @@ router.route('/api/user').post(function (req, res) {
 });
 
 // Update Specific User
-router.route('/api/user/:id').post(function (req, res) {
+router.route('/api/user/:id').put(function (req, res) {
     User.findById(req.params.id, function (err, user) {
         if (!user)
             return next(new Error('User could not be found.'));
@@ -53,7 +53,7 @@ router.route('/api/user/:id').post(function (req, res) {
 });
 
 // Delete Specific
-router.route('/delete/:id').get(function (req, res) {
+router.route('/api/user/:id').delete(function (req, res) {
     User.findByIdAndRemove({_id: req.params.id},
             function (err, user) {
                 if (err)
